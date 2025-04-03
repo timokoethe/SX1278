@@ -6,7 +6,7 @@ This repository provides a lightweight [MicroPython](https://micropython.org/) l
   
 ## Installation
 Copy the file ```sx1278.py``` to the root directory of your microcontroller. 
-THen, import the module using ```from sx1278 import Lora```.
+Then, import the module using ```from sx1278 import Lora```.
 Ensure you are using the correct frequency for your region. 
 You can adjust this at the top of the library file by modifying the relevant variable.
 
