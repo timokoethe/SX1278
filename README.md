@@ -1,66 +1,104 @@
-# MicroPython library for the SX1278
+# SX1278 MicroPython Library for Raspberry Pi Pico
 
-[![MicroPython](https://img.shields.io/badge/MicroPython-2B2728?style=for-the-badge&logo=micropython&logoColor=0f0)](https://micropython.org/)
-[![License: MIT](https://img.shields.io/badge/license-MIT-mint)](https://opensource.org/license/mit)
+[![MicroPython](https://img.shields.io/badge/MicroPython-2B2728?logo=micropython&logoColor=white)](https://micropython.org/)
+[![Raspberry%20Pi%20Pico](https://img.shields.io/badge/Raspberry%20Pi-Pico%20%26%20Pico%202-C51A4A?&logo=raspberrypi&logoColor=white)](https://www.raspberrypi.com/products/raspberry-pi-pico/)
+[![Version](https://img.shields.io/badge/version-1.1-f883d)](https://www.raspberrypi.com/products/raspberry-pi-pico/)
+[![License](https://img.shields.io/badge/license-MIT-0b7285)](https://opensource.org/license/mit)
 
-This repository provides a lightweight [MicroPython](https://micropython.org/) library for the Ra-01 LoRa module, based on the SX1278 chipset, designed for use with the Raspberry Pi Pico (RP2040) or the Raspberry Pi Pico 2 (RP2350). The library supports communication via SPI.
-  
+Lightweight [MicroPython](https://micropython.org/) driver for the Ra-01 LoRa module based on the SX1278 chipset, with a setup focused on the Raspberry Pi Pico (RP2040) and Raspberry Pi Pico 2 (RP2350).
+
+The library communicates over SPI and provides a simple API for sending and receiving LoRa packets.
+
+## Features
+
+- MicroPython-first API with minimal setup
+- Works with Raspberry Pi Pico and Pico 2
+- Blocking packet transmission with `send()`
+- Interrupt-driven packet reception with `on_recv()`
+- Configurable frequency, bandwidth, spreading factor, coding rate, and CRC
+
 ## Installation
 
-Copy the file ```sx1278.py``` to the root directory of your microcontroller.
-Then, import the module using ```from sx1278 import Lora```.
-Ensure you are using the correct frequency for your region.
-You can adjust this at the top of the library file by modifying the relevant variable.
-
-## Setup
-
-First connect and setup SPI for the LoRa module:
+Copy [`sx1278.py`](./sx1278.py) to the root of your MicroPython device, then import it in your script:
 
 ```python
-# Setup SPI
-spi = SPI(0, baudrate=10000000,
-          sck=Pin(SCK, Pin.OUT, Pin.PULL_DOWN),
-          mosi=Pin(MOSI, Pin.OUT, Pin.PULL_UP),
-          miso=Pin(MISO, Pin.IN, Pin.PULL_UP))
+from sx1278 import Lora
+```
+
+## Quick Start
+
+Set up SPI first:
+
+```python
+from machine import Pin, SPI
+from sx1278 import Lora
+
+SCK = 2
+MOSI = 3
+MISO = 0
+CS = 1
+RX = 10
+RS = 16
+
+spi = SPI(
+    0,
+    baudrate=10_000_000,
+    sck=Pin(SCK, Pin.OUT, Pin.PULL_DOWN),
+    mosi=Pin(MOSI, Pin.OUT, Pin.PULL_UP),
+    miso=Pin(MISO, Pin.IN, Pin.PULL_UP),
+)
 spi.init()
 ```
 
-Next, setup the module. Make sure to connect cs, rx and rst pins correctly.
+Then create the LoRa instance:
 
 ```python
-# Setup the lora module
-lr = Lora(spi,
-            cs=Pin(CS, Pin.OUT),
-            rx=Pin(RX, Pin.IN),
-            rs=Pin(RS, Pin.OUT))
+lr = Lora(
+    spi,
+    cs=Pin(CS, Pin.OUT),
+    rx=Pin(RX, Pin.IN),
+    rs=Pin(RS, Pin.OUT),
+)
 ```
 
 ## Sending Data
 
-This method blocks until the sending is completed. The maximum package length is 255 bytes.
+`send()` blocks until transmission has finished. The maximum payload length is 255 bytes.
 
 ```python
-lr.send('Hello World!')
+lr.send("Hello World!")
 ```
 
 ## Receiving Data
 
-The module operates in receiving mode to receive data. When a message is received, a handler is executed.
-To keep the program running, use a loop where any necessary break conditions can be implemented.
+Register a receive handler, put the module into receive mode, and keep the script running:
 
 ```python
-# Handles incoming messages
 def handler(message):
     print(message)
-    # Puts module back in receiving mode
+    # Put the module back into receive mode after handling a packet.
     lr.recv()
 
-# Sets handler
 lr.on_recv(handler)
-# Puts module in receiving mode
 lr.recv()
 
-# Prevents the program from stopping
 while True:
     pass
 ```
+
+## Examples
+
+Ready-to-run examples for the Raspberry Pi Pico are included in the [`example`](./example) directory:
+
+- [`example/send.py`](./example/send.py)
+- [`example/receive.py`](./example/receive.py)
+
+## Important Notes
+
+- Use a frequency that is legal for your region.
+- The default frequency in [`sx1278.py`](./sx1278.py) is `433.1` MHz.
+- You can override the default by passing `frequency=` when creating `Lora`, or by changing the module constant in the library.
+
+## License
+
+This project is licensed under the MIT License. See [`LICENSE`](./LICENSE).
