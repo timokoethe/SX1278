@@ -120,7 +120,10 @@ class Lora:
         return rssi - 164
 
     def get_snr(self):
-        return self._read(REG_PKT_SNR_VALUE) * 0.25
+        value = self._read(REG_PKT_SNR_VALUE)
+        if value > 127:
+            value -= 256
+        return value * 0.25
 
     def standby(self):
         self._write(REG_OP_MODE, MODE_LORA | MODE_STDBY)
