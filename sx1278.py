@@ -1,8 +1,6 @@
 import gc
 from machine import Pin
 from time import sleep, sleep_ms
-import struct
-import ubinascii
 
 FREQUENCY = 433.1
 
@@ -130,8 +128,8 @@ class Lora:
     def sleep(self):
         self._write(REG_OP_MODE, MODE_LORA | MODE_SLEEP)
 
-    def set_tx_power(self, level, outputPin=PA_OUTPUT_PA_BOOST_PIN):
-        if outputPin == PA_OUTPUT_RFO_PIN:
+    def set_tx_power(self, level, output_pin=PA_OUTPUT_PA_BOOST_PIN):
+        if output_pin == PA_OUTPUT_RFO_PIN:
             level = min(max(level, 0), 14)
             self._write(REG_PA_CONFIG, 0x70 | level)
         else:
@@ -153,7 +151,7 @@ class Lora:
         self._write(REG_DETECTION_THRESHOLD, 0x0c if sf == 6 else 0x0a)
         reg2 = self._read(REG_MODEM_CONFIG_2)
         self._write(REG_MODEM_CONFIG_2, (reg2 & 0x0f) | ((sf << 4) & 0xf0))
-	self._write(REG_MODEM_CONFIG_3, 0x08 if (sf>10 and self._bandwidth<250000) else 0x00)
+        self._write(REG_MODEM_CONFIG_3, 0x08 if (sf>10 and self._bandwidth<250000) else 0x00)
 
     def set_bandwidth(self, bw):
         self._bandwidth = bw
@@ -249,4 +247,3 @@ class Lora:
         sleep(0.1)
         self.rs.value(1)
         sleep(0.1)
-
