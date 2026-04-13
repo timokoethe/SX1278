@@ -3,7 +3,7 @@
 [![MicroPython](https://img.shields.io/badge/MicroPython-2B2728?logo=micropython&logoColor=white)](https://micropython.org/)
 [![Raspberry%20Pi%20Pico](https://img.shields.io/badge/Raspberry%20Pi-Pico%20%26%20Pico%202-C51A4A?&logo=raspberrypi&logoColor=white)](https://www.raspberrypi.com/products/raspberry-pi-pico/)
 [![Version](https://img.shields.io/badge/version-1.1-f883d)](https://www.raspberrypi.com/products/raspberry-pi-pico/)
-[![License](https://img.shields.io/badge/license-MIT-0b7285)](https://opensource.org/license/mit)
+[![License](https://img.shields.io/badge/license-MIT-f883d)](https://opensource.org/license/mit)
 
 Lightweight [MicroPython](https://micropython.org/) driver for the Ra-01 LoRa module based on the SX1278 chipset, with a setup focused on the Raspberry Pi Pico (RP2040) and Raspberry Pi Pico 2 (RP2350).
 
@@ -27,6 +27,19 @@ from sx1278 import Lora
 
 ## Quick Start
 
+Example wiring used by the snippets below:
+
+| SX1278 / Ra-01 | Raspberry Pi Pico | Used in code |
+| --- | --- | --- |
+| MISO | GP0 | `MISO = 0` |
+| DIO0 | GP10 | `RX = 10` |
+| SCK | GP2 | `SCK = 2` |
+| MOSI | GP3 | `MOSI = 3` |
+| RST | GP16 | `RST = 16` |
+| NSS | GP1 | `CS = 1` |
+| GND | GND | power |
+| 3V3 | 3V3(OUT) | power |
+
 Set up SPI first:
 
 ```python
@@ -38,7 +51,7 @@ MOSI = 3
 MISO = 0
 CS = 1
 RX = 10
-RS = 16
+RST = 16
 
 spi = SPI(
     0,
@@ -57,7 +70,7 @@ lr = Lora(
     spi,
     cs=Pin(CS, Pin.OUT),
     rx=Pin(RX, Pin.IN),
-    rs=Pin(RS, Pin.OUT),
+    rs=Pin(RST, Pin.OUT),
 )
 ```
 
