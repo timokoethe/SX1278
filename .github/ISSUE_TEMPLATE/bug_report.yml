@@ -1,0 +1,60 @@
+name: Bug report
+description: Report a reproducible problem with the SX1278 MicroPython driver.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What happened, and what did you expect instead?
+      placeholder: Receiving stops after the first packet; expected continuous reception.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Include the smallest code snippet or example change that shows the issue.
+      placeholder: |
+        1. Flash sx1278.py to the Pico.
+        2. Run example/receive.py with ...
+        3. Send a packet from ...
+    validations:
+      required: true
+
+  - type: input
+    id: hardware
+    attributes:
+      label: Hardware
+      description: Pico model, SX1278/Ra-01 module, wiring changes, and antenna.
+      placeholder: Raspberry Pi Pico 2, Ra-01 SX1278, default README wiring
+    validations:
+      required: true
+
+  - type: input
+    id: firmware
+    attributes:
+      label: MicroPython version
+      placeholder: MicroPython v1.23.0 on RP2040
+    validations:
+      required: true
+
+  - type: textarea
+    id: radio-config
+    attributes:
+      label: Radio configuration
+      description: Frequency, bandwidth, spreading factor, coding rate, CRC, and payload size.
+      placeholder: frequency=433.1 MHz, bw=125 kHz, sf=7, cr=4/5, crc=True
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or output
+      description: Paste traceback, serial output, or relevant measurements.
+      render: text
+    validations:
+      required: false

@@ -1,0 +1,39 @@
+name: Feature request
+description: Suggest an improvement for the SX1278 MicroPython driver.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What use case is difficult or unsupported today?
+      placeholder: I need to configure ... without editing sx1278.py.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Describe the API, behavior, or documentation change you want.
+      placeholder: Add a constructor option for ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Mention any workaround or different approach you tried.
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Hardware, region/frequency, MicroPython version, or related LoRa settings.
+      placeholder: Raspberry Pi Pico, Ra-01 SX1278, 433 MHz region, MicroPython v1.23.0
+    validations:
+      required: false
