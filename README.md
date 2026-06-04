@@ -2,7 +2,7 @@
 
 [![MicroPython](https://img.shields.io/badge/MicroPython-2B2728?logo=micropython&logoColor=white)](https://micropython.org/)
 [![Raspberry%20Pi%20Pico](https://img.shields.io/badge/Raspberry%20Pi-Pico%20%26%20Pico%202-C51A4A?&logo=raspberrypi&logoColor=white)](https://www.raspberrypi.com/products/raspberry-pi-pico/)
-[![Version](https://img.shields.io/badge/version-1.1-f883d)](https://www.raspberrypi.com/products/raspberry-pi-pico/)
+[![Version](https://img.shields.io/badge/version-1.2-f883d)](https://github.com/timokoethe/SX1278/releases)
 [![License](https://img.shields.io/badge/license-MIT-f883d)](https://opensource.org/license/mit)
 
 Lightweight [MicroPython](https://micropython.org/) driver for the Ra-01 LoRa module based on the SX1278 chipset, with a setup focused on the Raspberry Pi Pico (RP2040) and Raspberry Pi Pico 2 (RP2350).
@@ -76,7 +76,7 @@ lr = Lora(
 
 ## Sending Data
 
-`send()` blocks until transmission has finished. The maximum payload length is 255 bytes.
+`send()` blocks until transmission has finished or the TX timeout is reached. The default timeout is 5000 ms and can be changed with `tx_timeout_ms=` when creating `Lora`. The maximum payload length is 255 bytes.
 
 ```python
 lr.send("Hello World!")
