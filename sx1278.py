@@ -1,6 +1,6 @@
 import gc
 from machine import Pin
-from time import sleep, sleep_ms
+from time import sleep, sleep_ms, ticks_diff, ticks_ms
 
 FREQUENCY = 433.1
 
@@ -75,6 +75,7 @@ class Lora:
         self.set_implicit(self._implicit)
         self.set_sync_word(kw.get('sync_word', 0x12))
         self._on_recv = kw.get('on_recv', None)
+        self._tx_timeout_ms = kw.get('tx_timeout_ms', 5000)
         self._write(REG_FIFO_TX_BASE_ADDR, TX_BASE_ADDR)
         self._write(REG_FIFO_RX_BASE_ADDR, RX_BASE_ADDR)
         self.standby()
@@ -86,8 +87,13 @@ class Lora:
 
     def end_packet(self):
         self._write(REG_OP_MODE, MODE_LORA | MODE_TX)
+        start = ticks_ms()
         while (self._read(REG_IRQ_FLAGS) & IRQ_TX_DONE_MASK) == 0:
-            pass
+            if ticks_diff(ticks_ms(), start) > self._tx_timeout_ms:
+                self.standby()
+                self._write(REG_IRQ_FLAGS, IRQ_TX_DONE_MASK)
+                raise TimeoutError('Timed out waiting for TX done')
+            sleep_ms(1)
         self._write(REG_IRQ_FLAGS, IRQ_TX_DONE_MASK)
         gc.collect()
 
