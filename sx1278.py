@@ -71,8 +71,8 @@ class Lora:
         # set auto AGC
         self._write(REG_MODEM_CONFIG_3, 0x00)
         self.set_tx_power(kw.get('tx_power', 24))
-        self._implicit = kw.get('implicit', False)
-        self.set_implicit(self._implicit)
+        self._implicit = False
+        self.set_implicit(kw.get('implicit', False))
         self.set_sync_word(kw.get('sync_word', 0x12))
         self._on_recv = kw.get('on_recv', None)
         self._tx_timeout_ms = kw.get('tx_timeout_ms', 5000)
