@@ -111,6 +111,7 @@ Ready-to-run examples for the Raspberry Pi Pico are included in the [`example`](
 - Use a frequency that is legal for your region.
 - The default frequency in [`sx1278.py`](./sx1278.py) is `433.1` MHz.
 - You can override the default by passing `frequency=` when creating `Lora`, or by changing the module constant in the library.
+- The default transmit power is `17` dBm. Values above `17` are clamped to `17` by the default PA_BOOST output path.
 
 ## License
 
