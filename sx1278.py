@@ -70,7 +70,7 @@ class Lora:
         self._write(REG_LNA, self._read(REG_LNA) | 0x03)
         # set auto AGC
         self._write(REG_MODEM_CONFIG_3, 0x00)
-        self.set_tx_power(kw.get('tx_power', 24))
+        self.set_tx_power(kw.get('tx_power', 17))
         self._implicit = False
         self.set_implicit(kw.get('implicit', False))
         self.set_sync_word(kw.get('sync_word', 0x12))
