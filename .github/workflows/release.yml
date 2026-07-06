@@ -34,13 +34,20 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           RELEASE_NOTES_PATH="$RUNNER_TEMP/release-notes.md"
+          GENERATED_RELEASE_NOTES_PATH="$RUNNER_TEMP/generated-release-notes.md"
 
           gh api \
             --method POST \
             "repos/$GITHUB_REPOSITORY/releases/generate-notes" \
             -f tag_name="$RELEASE_TAG" \
             -f target_commitish="$GITHUB_SHA" \
-            --jq '.body' > "$RELEASE_NOTES_PATH"
+            --jq '.body' > "$GENERATED_RELEASE_NOTES_PATH"
+
+          {
+            echo "## Release Notes"
+            echo
+            sed 's/^## /### /' "$GENERATED_RELEASE_NOTES_PATH"
+          } > "$RELEASE_NOTES_PATH"
 
           echo "RELEASE_NOTES_PATH=$RELEASE_NOTES_PATH" >> "$GITHUB_ENV"
 
