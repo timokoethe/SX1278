@@ -53,7 +53,7 @@ jobs:
           {
             echo "## Release Notes"
             echo
-            sed 's/^## /### /' "$GENERATED_RELEASE_NOTES_PATH"
+            sed '/^## What'\''s Changed$/d; s/^## /### /' "$GENERATED_RELEASE_NOTES_PATH"
           } > "$RELEASE_NOTES_PATH"
 
           echo "RELEASE_NOTES_PATH=$RELEASE_NOTES_PATH" >> "$GITHUB_ENV"
