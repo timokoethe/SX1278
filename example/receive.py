@@ -23,10 +23,7 @@ lr = Lora(
     rs=Pin(RST, Pin.OUT))
 
 def on_receive(message):
-    try:
-        print(message)
-    finally:
-        lr.recv()
+    print(message)
 
 lr.on_recv(on_receive)
 lr.recv()
