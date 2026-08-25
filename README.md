@@ -89,8 +89,6 @@ Register a receive handler, put the module into receive mode, and keep the scrip
 ```python
 def handler(message):
     print(message)
-    # Put the module back into receive mode after handling a packet.
-    lr.recv()
 
 lr.on_recv(handler)
 lr.recv()
