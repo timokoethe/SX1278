@@ -90,7 +90,7 @@ Register a receive handler, put the module into receive mode, and keep the scrip
 
 ```python
 def handler(message):
-    print(message)
+    print(message.decode())
 
 lr.on_recv(handler)
 lr.recv()
@@ -98,6 +98,9 @@ lr.recv()
 while True:
     pass
 ```
+
+The handler is called with the payload as a `bytes` object, so `print(message)` prints `b'Hello World!'` rather than `Hello World!`. 
+Decode it when you expect text.
 
 ## Examples
 
