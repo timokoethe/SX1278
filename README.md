@@ -74,6 +74,8 @@ lr = Lora(
 )
 ```
 
+All radio settings have defaults. See the [API reference](./docs/api.md#constructor) for the full list of constructor options.
+
 ## Sending Data
 
 `send()` blocks until transmission has finished or the TX timeout is reached. The default timeout is 5000 ms and can be changed with `tx_timeout_ms=` when creating `Lora`. The maximum payload length is 255 bytes.
@@ -103,6 +105,15 @@ Ready-to-run examples for the Raspberry Pi Pico are included in the [`example`](
 
 - [`example/send.py`](./example/send.py)
 - [`example/receive.py`](./example/receive.py)
+
+## Documentation
+
+[`docs/api.md`](./docs/api.md) documents the full public API: method signatures, defaults, value ranges, limitations, and which radio mode each method requires.
+
+- [`Lora` constructor](./docs/api.md#constructor)
+- [Sending and receiving](./docs/api.md#sendx)
+- [Radio configuration](./docs/api.md#radio-configuration)
+- [Operating modes](./docs/api.md#operating-modes)
 
 ## Important Notes
 
