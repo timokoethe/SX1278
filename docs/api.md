@@ -228,6 +228,27 @@ payload length.
 
 ## Operating modes
 
+The diagram shows the main paths into transmit and receive mode. Initialization
+leaves the radio in standby. `send()` calls `begin_packet()`, `write_packet()`,
+and `end_packet()` in sequence.
+
+```mermaid
+flowchart LR
+    Sleep -->|"standby()"| Standby
+    Standby -->|"end_packet()"| Transmitting[Transmit]
+    Standby -->|"recv()"| Receiving[Continuous receive]
+```
+
+Registering a callback with `on_recv()` does not change the radio mode; call
+`recv()` to start receiving. Receiving a packet keeps the radio in continuous
+receive mode unless the callback changes it. Sending leaves the radio in
+standby, so call `recv()` again to resume reception afterwards.
+
+`standby()` and `begin_packet()` leave sleep or receive mode and enter standby.
+`sleep()` places an idle or receiving radio in sleep mode. `recv()` can also
+start reception directly from sleep. After TX completion or a TX timeout, the
+radio returns to standby.
+
 ### `standby()`
 
 Places the radio in standby mode.
