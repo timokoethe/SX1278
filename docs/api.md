@@ -60,7 +60,7 @@ Sends one packet. Strings are encoded to bytes using MicroPython's default
 encoding. Byte sequences are sent unchanged.
 
 Transmission is blocking. The method returns after the packet has been sent,
-or raises `TimeoutError` when `tx_timeout_ms` is exceeded. A packet can contain
+or raises `OSError` when `tx_timeout_ms` is exceeded. A packet can contain
 at most 255 bytes; a larger packet raises `ValueError`.
 
 ### `on_recv(callback)`
@@ -285,5 +285,5 @@ result would exceed the 255-byte maximum payload length.
 
 ### `end_packet()`
 
-Starts transmission and blocks until it completes. It raises `TimeoutError` if
+Starts transmission and blocks until it completes. It raises `OSError` if
 the configured transmit timeout is exceeded.

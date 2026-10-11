@@ -92,7 +92,7 @@ class Lora:
             if ticks_diff(ticks_ms(), start) > self._tx_timeout_ms:
                 self.standby()
                 self._write(REG_IRQ_FLAGS, IRQ_TX_DONE_MASK)
-                raise TimeoutError('Timed out waiting for TX done')
+                raise OSError('Timed out waiting for TX done')
             sleep_ms(1)
         self._write(REG_IRQ_FLAGS, IRQ_TX_DONE_MASK)
         gc.collect()
