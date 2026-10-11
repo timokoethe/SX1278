@@ -118,8 +118,18 @@ in steps of `0.25` dB.
 
 ## Radio configuration
 
-Configuration methods take effect immediately. Configure both ends of a link
-with compatible values.
+Call configuration methods only while the radio is in sleep or standby mode.
+These methods write the radio registers directly and do not change the operating
+mode themselves. Call `standby()` before changing settings during reception,
+then call `recv()` to resume receiving:
+
+```python
+lr.standby()
+lr.set_frequency(433.1)
+lr.recv()
+```
+
+Configure both ends of a link with compatible values.
 
 ### `set_frequency(frequency)`
 
