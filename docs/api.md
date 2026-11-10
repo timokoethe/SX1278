@@ -11,12 +11,17 @@ from sx1278 import Lora
 
 ### Constructor
 
+Supported options and defaults:
+
 ```python
 Lora(spi, *, cs, rx, rs, frequency=433.1, bandwidth=250000,
      spreading_factor=10, coding_rate=5, preamble_length=4,
      crc=False, tx_power=17, implicit=False, sync_word=0x12,
      on_recv=None, tx_timeout_ms=5000)
 ```
+
+The implementation accepts `Lora(spi, **kw)`: `cs`, `rx`, and `rs` are required
+keyword arguments; unknown keywords are silently ignored.
 
 Creates and initializes a radio. The constructor resets the module, verifies
 that the SX1278 version register contains the expected value, applies the radio
@@ -38,7 +43,7 @@ configuration, and leaves the module in standby mode.
 | `implicit` | Enables implicit-header mode when true. Defaults to `False`. |
 | `sync_word` | One-byte LoRa sync word. Defaults to `0x12`. |
 | `on_recv` | Optional initial receive callback reference. This does not register the DIO0 interrupt; call `on_recv()` before receiving. |
-| `tx_timeout_ms` | Maximum time in milliseconds for a transmission to finish. Defaults to `5000`. |
+| `tx_timeout_ms` | TX timeout in milliseconds. Use a positive integer; not validated. Defaults to `5000`. |
 
 The constructor raises `Exception` if the version register cannot be read as
 `0x12`. This normally indicates an SPI, power, reset, or wiring problem.
@@ -73,11 +78,12 @@ lr.on_recv(handle_packet)
 ```
 
 Registers a function that receives each valid packet as a `bytes` object. The
-callback is invoked from the DIO0 pin's interrupt handler, so it should finish
-quickly. The radio remains in continuous receive mode after processing a packet,
+callback runs inside the DIO0 pin's interrupt handler. Keep it short; defer
+blocking work, including `send()` and delays, to the main loop.
+The radio remains in continuous receive mode after processing a packet,
 so the callback does not normally need to call `recv()` again. Call `recv()` to
 resume reception if the callback changes the operating mode, for example by
-sending a response or calling `standby()` or `sleep()`.
+calling `standby()` or `sleep()`.
 
 Pass `None` to remove the callback and disable the DIO0 interrupt:
 
@@ -196,7 +202,8 @@ lr.set_coding_rate(5)  # 4/5
 
 ### `set_preamble_length(n)`
 
-Sets the preamble length in symbols.
+Sets the preamble length in symbols. `n` is an integer; only its low 16 bits
+are written (`0` through `65535`). The driver does not validate the range.
 
 ```python
 lr.set_preamble_length(8)
@@ -212,7 +219,8 @@ lr.set_crc(True)
 
 ### `set_sync_word(sw)`
 
-Sets the one-byte LoRa sync word.
+Sets the one-byte LoRa sync word. Use an integer from `0` through `255`;
+out-of-range values raise `ValueError` when converted to a byte.
 
 ```python
 lr.set_sync_word(0x12)
@@ -269,7 +277,10 @@ Places the radio in sleep mode.
 
 ### `reset()`
 
-Performs a hardware reset using the reset pin supplied as `rs`.
+Performs a hardware reset using the reset pin supplied as `rs`. This clears
+the radio configuration without resetting the driver's cached state. Recreate
+the `Lora` instance with the desired settings before further use, and register
+the receive callback again if needed.
 
 ## Manual packet construction
 
