@@ -1,0 +1,46 @@
+name: Checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        # actions/checkout@v7.0.0
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          persist-credentials: false
+
+      - name: Check Python syntax
+        run: python3 -m compileall -q sx1278.py example
+
+      - name: Check local Markdown file links
+        shell: python
+        run: |
+          import re
+          import sys
+          from pathlib import Path
+          from urllib.parse import unquote, urlsplit
+
+          # Check inline link destinations, not external URLs or heading anchors.
+          files = sorted(Path(".").glob("*.md")) + sorted(Path("docs").rglob("*.md"))
+          failed = False
+          for file in files:
+              for match in re.finditer(r"\]\(([^\s)]+)\)", file.read_text(encoding="utf-8")):
+                  target = urlsplit(match.group(1))
+                  if target.scheme or target.netloc or not target.path:
+                      continue
+                  path = unquote(target.path)
+                  destination = Path(path.lstrip("/")) if path.startswith("/") else file.parent / path
+                  if not destination.exists():
+                      print(f"{file}: missing link target: {match.group(1)}")
+                      failed = True
+          sys.exit(1 if failed else 0)
