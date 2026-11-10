@@ -1,7 +1,6 @@
-name: Checks
+name: Validate main
 
 on:
-  pull_request:
   push:
     branches: [main]
 
@@ -9,7 +8,7 @@ permissions:
   contents: read
 
 jobs:
-  checks:
+  validate:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
