@@ -24,8 +24,8 @@ REG_FIFO_RX_BASE_ADDR = 0x0f
 REG_FIFO_RX_CURRENT_ADDR = 0x10
 REG_IRQ_FLAGS = 0x12
 REG_RX_NB_BYTES = 0x13
+REG_PKT_SNR_VALUE = 0x19
 REG_PKT_RSSI_VALUE = 0x1a
-REG_PKT_SNR_VALUE = 0x1b
 REG_MODEM_CONFIG_1 = 0x1d
 REG_MODEM_CONFIG_2 = 0x1e
 REG_PREAMBLE_MSB = 0x20
@@ -119,9 +119,11 @@ class Lora:
 
     def get_rssi(self):
         rssi = self._read(REG_PKT_RSSI_VALUE)
-        if self._frequency >= 779.0:
-            return rssi - 157
-        return rssi - 164
+        rssi -= 157 if self._frequency >= 779.0 else 164
+        snr = self.get_snr()
+        if snr < 0:
+            rssi += snr
+        return rssi
 
     def get_snr(self):
         value = self._read(REG_PKT_SNR_VALUE)
