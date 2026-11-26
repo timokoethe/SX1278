@@ -111,7 +111,8 @@ rssi = lr.get_rssi()
 ```
 
 Returns the received signal strength of the most recently received packet in
-dBm.
+dBm. When the packet SNR is negative, the result includes the SNR correction
+and can have fractional dBm values.
 
 ### `get_snr()`
 
